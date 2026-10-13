@@ -32,7 +32,9 @@ kills=0
 baseatk=3
 atk = (level * 1.5) + baseatk + wepstats["stat_weapons"][using["weapons"]]
 levscale = level * 1.2 + atk*0.8
-inventory={"weapons":["axe"],"armour":["leather vest"],"foods":[], "level": level, "HP": hp,"MAXHP":maxhp, "attack":atk, "kills":kills }
+inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": hp,"MAXHP":maxhp, "attack":atk, "kills":kills }
+
+stats={"level":inventory["level"], "HP":inventory["HP"], "attack":inventory["attack"]}
 
 def inv():
     global choice,inventory,using,atk,level,baseatk,hp,maxhp
@@ -134,18 +136,26 @@ def inv():
 elist=["zombie","skelezombie","fatbie"]
 
 mobs = {
+    "random guy": {"attack": 3, "HP":6, "ascii":"웃", "desc":"rando turned into a zombie like a suicide bomber!?"},
     "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "hes green and greedy and so green and green."},
-    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are strippde to the bone, super sharp owieowie!"},
-    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf <3"}
+    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are stripped to the bone, super sharp owieowie!"},
+    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf "}
 }
 def battle():
     global atk,hp,level,maxhp,kills
 
     enemy=random.choice(elist)
+    if introIs == True:
+        enemy="random guy"
     ehp = mobs[enemy]["HP"]
     ehp=int(ehp)
     emaxhp = ehp
+    print(stats)
     print(f"\na {enemy} approaches!")
+    if introIs == True:
+        print("press 1 and attack!!!")
+        print("you can heal by eating food by pressing 2 which is found in shops.\nyou can run if you think you're outmatched but there is a chance that you can fail;\nwhen you fail, the enemy will be able to have their turn!")
+
 
     turn=True
     while True:
@@ -185,9 +195,14 @@ def battle():
                             turn = False
 
                         inventory["foods"].pop(eating)
-                elif batinput=="3":
+                elif batinput == "3":
+
                     i=random.randint(0,100)
-                    if i < 70:
+                    if introIs == True:
+                        print("doc:GET BACK HERE")
+                        print("the doctor dragged you back!")
+                        turn = False
+                    elif i < 70:
                         i=random.randint(1,2)
                         if i == 1:
                             print("you ran from the",enemy,"!")
@@ -209,35 +224,41 @@ def battle():
             print("+1 kill")
             kills = kills+1
             inventory["kills"]=kills
-            if kills == 3:
-                print("level up!")
-                level = level+1
-                inventory["level"]=level
-                inventory["MAXHP"]=maxhp
-                print("you are now level",level)
-                kills = 0
-            stealing(0,1)
-            print(tilename)
+            if introIs == False:
+                if kills == 3:
+                    print("level up!")
+                    level = level+1
+                    inventory["level"]=level
+                    inventory["MAXHP"]=maxhp
+                    print("you are now level",level)
+                    kills = 0
+                stealing(0,1)
+                print(tilename)
             break
         if hp <= 0:
             print("you died.\nyour mission is over.")
             exit()
 
-def intro():
+def intro():        #the intro which will lead into the first battle of the game
     print("...")
     input()
     print("???: do you hear me?... soldier?..")
     input()
     print("???:what is your name?\n")
-    username = input("your name:")
+    while True:
+        username = input("your name:")
+        if username == "":
+            print("hi no gimme a name")
+        else:
+            break
     print("\n???:ah yes", username)
     print("???:that checks out.")
     input()
     print("???:are you even conscious...")
     input()
     print("???:WAKEUP DAMN!")
-    playsound("sounds/spray.wav")
-    playsound("sounds/scream.wav")
+    #playsound("sounds/spray.wav")
+    #playsound("sounds/scream.wav")
     print("*your nostrils burn.*")
     print("???:nothing like some skatole and ammonium sulfide (fart spray.), am i right!?")
     input()
@@ -246,9 +267,9 @@ def intro():
     print("???:you're probably confused...")
     input()
     print("well to start off, my name is...")
-    playsound("sounds/drumroll.mp3")
+    #playsound("sounds/drumroll.mp3")
     print("???:THE DOCTOR!!")
-    time.sleep(2)
+    input()
     print("doc:why are you looking at me like that.")
     input()
     print("doc:well so basically like")
@@ -257,26 +278,39 @@ def intro():
     input()
     print("doc:so its kkindaaa baaaadd-")
     print("???:THERES A ZOMBIE APOCALYPSE AND YOU'RE THE WORLDS LAST HOPE.")
-    print("1.'im the worlds last hope?'\n2.'ok now who are you.'\n3.'AAAAAAAAAHH'")
+    input()
+    print("doc:...")
+    input()
+    print("doc:who are you.(╭ರ_•́)")
+    input()
+    print("1.'im the worlds last hope?'\n2.'who are you... who is this kid? whats he gonna do?'\n3.'oooh shiddings'")
     while True:
         dc = input("->")
         if dc == "1":
             print("doc:*cough* yeah pretty much...")
+            input()
+            break
         elif dc == "2":
-            print("don't worry about her, shes just a little passionate about this whole zombie thing")
+            print("???:oh am i talking to loud.")
             input()
-            print("???:RAAAAHHGG ZOMBIE SAVIOUR WOOAAW!!")
+            print("doc:yes obviously bro.")
+            input()
+            break
         elif dc == "3":
-            print("???:RAAAAAAAAAAAH")
-            input()
-            print("doc:SHUT UP! THE BOTH OF YOU!!")
-            input()
-            print("???:okay sorry.")
-            dc = input("1.'sorry not sorry ahahah'\n2.'yeah sorry... kinda.'")
-            if dc == "1":
-                print("???:ahahahahaahahaha good one ahaha")
-            elif dc == "2":
-                print("yeah totally yeah like sorry probably no not really ITS A ZOMBIE APOCALYPSE SHUT UP")
+            break
+    print("doc:how did you get in here???")
+    input()
+    print("ultra evil guy:my name is actually ultra evil guy im here to stop you from saving the world grgrllgGRAHHH!")
+    print("*he turns into a zombie on the spot?!*")
+    input()
+    print("doc:holy crap save me my dear soldier",username)
+    battle()
+    print("doc:omg you saved mee!!")
+    input()
+    print("doc:okay get out.")
+    input()
+    input("doc:its time for your...")
+    input()
 
 introIs = True #to skip the intro
 while introIs == True:
@@ -285,8 +319,13 @@ while introIs == True:
         intro()
         introIs = False
     elif introchoice == "n":
-        break
-
+        while True:
+            username = input("your name:")
+            if username == "":
+                print("hi no gimme a name")
+            else:
+                break
+        introIs=False
 
 def menu(): #the menu you can access while ingame!!
     global MapGame
@@ -343,7 +382,7 @@ while MapGame == True:
               ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
               ["w", "f", "f", "sh", "f", "f", "f", "f", "w"],
               ["w", "f", "f", "f", "f", "sh", "f", "f", "w"],
-              ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
+                  ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
               ["w", "sh", "f", "f", "f", "f", "f", "f", "w"],
               ["e", "e", "e", "e", "e", "e", "e", "e", "e"]]
     currentmap = lab
@@ -407,34 +446,35 @@ while MapGame == True:
 
         def stealing(a,b):
             for i in range(a,b):
-                print("newsteal")
                 whatclass = random.randint(1, 4)
                 if whatclass == 1:
-                    robc = random.randint(1, 12)
+                    robc = random.randint(1, 100)
                     print(robc)
-                    if robc == 1 or 2 or 3 or 4 or 5:
-                        yougot("wood bat")
-                        icheck("wood bat", "weapons")
-                    if robc == 6 or 7 or 8 or 9 :
-                        yougot("axe")
-                        icheck("axe", "weapons")
-                    if robc == 10 or 11 or 12:
+                    if robc >= 80:
                         yougot("knife")
                         icheck("knife", "weapons")
+                    elif robc >= 60:
+                        yougot("axe")
+                        icheck("axe", "weapons")
+                    elif robc >= 1:
+                        yougot("wood bat")
+                        icheck("wood bat", "weapons")
                 elif whatclass == 2:
-                    robc = random.randint(1, 5)
-                    if robc == 1 or 2 or 3:
+                    robc = random.randint(1, 100)
+                    print(robc)
+                    if robc <= 60:
                         yougot("leather vest")
                         icheck("leather vest","armour")
-                    if robc == 4 or 5:
+                    elif robc <= 100:
                         yougot("metal sheets??")
                         icheck("metal sheets","armour")
                 elif whatclass == 3:
-                    robc = random.randint(1, 5)
-                    if robc == 1 or 2 or 3:
+                    robc = random.randint(1, 100)
+                    print(robc)
+                    if robc <= 40:
                         yougot("canned beans")
                         inventory["foods"].append("CANbeans")
-                    if robc == 4 or 5:
+                    if robc <= 100:
                         yougot("super soup!")
                         inventory["foods"].append("SPRsoup")
                 elif whatclass == 4:
@@ -455,7 +495,7 @@ while MapGame == True:
             if current_tile == "sh":
                 print("oo you stealin, heres what you got!:")
                 stealing(0,3)
-                currentmap[y][x]="rsh"
+                currentmap[y][x] = "rsh"
                 current_tile = currentmap[y][x]
             elif current_tile == "e":
                 if currentmap == lab:
