@@ -3,7 +3,7 @@ import random
 import time
 
 from win32con import MIIM_CHECKMARKS
-
+firstbrute=False
 wallcount=int(0)
 MapGame = False
 def line():
@@ -109,44 +109,59 @@ def inv():
                     print(tnum, ".", inventory["foods"][tnum])
                     tnum = tnum + 1
                 while True:
-                    try:
-                        eating = int(input("->"))
+                    eating = input("->")
+                    if eating.isdigit():
+                        try:
+                            if inventory["foods"][eating] == "SPRsoup":
+                                print("you feel so souper!")
+                                print("ATK and HP increase.")
+                                hp = hp + 7
+                                inventory["HP"] = hp
+                                atk = atk + 3
+                                break
 
-                        if inventory["foods"][eating] == "SPRsoup":
-                            print("you feel so souper!")
-                            print("ATK and HP increase.")
-                            hp = hp + 7
-                            inventory["HP"] = hp
-                            atk = atk + 3
-                            break
-
-                        elif inventory["foods"][eating] == "CANbeans":
-                            print("hienz beanz mmm")
-                            print("HP increase.")
-                            hp = hp + 4
-                            inventory["HP"] = hp
-                            break
-                    except TypeError or IndexError:
-                        print("not a choice presented")
-
+                            elif inventory["foods"][eating] == "CANbeans":
+                                print("hienz beanz mmm")
+                                print("HP increase.")
+                                hp = hp + 4
+                                inventory["HP"] = hp
+                                break
+                        except IndexError:
+                            print("not an option")
 
         if choice == "4":
             break
 
 elist=["zombie","skelezombie","fatbie"]
-
+elist2=["ZEBRUTE","zombie","skelezombie","fatbie"]
 mobs = {
-    "random guy": {"attack": 3, "HP":6, "ascii":"웃", "desc":"rando turned into a zombie like a suicide bomber!?"},
+    "random guy": {"attack": 3, "HP":6, "ascii":"웃", "desc":"rando turned into a zombie!?"},
     "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "hes green and greedy and so green and green."},
     "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are stripped to the bone, super sharp owieowie!"},
-    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf "}
+    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf "},
+    "ZEBRUTE":{"attack":10+ levscale, "HP": 16 + levscale,"ascii":"""⣿⣿⣿⣿⣿⣿⣿⣿⡿⢟⣩⣵⣶⣶⣶⣶⡶⣢⣶⣬⣙⠻⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⡿⢋⠴⣿⣿⠛⠭⢟⡿⣿⣯⣽⣿⣛⣛⣷⣬⡙⢿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⠏⡴⡓⣿⢻⠿⣛⣻⣿⣬⡘⣯⣚⡼⠋⣛⠛⣿⡿⢦⠹⣿⣿⣿⣿
+⣿⣿⣿⣿⡟⢜⡗⣾⢧⣶⣿⡿⠛⢿⣿⡇⣿⡿⢰⣮⣝⠷⣙⣼⣙⢧⢹⣿⣿⣿
+⣿⣿⣿⣿⡇⢟⣵⣿⠸⣿⣿⡀⠀⣸⣿⢃⣿⡇⢿⣟⠉⢱⣌⠇⢟⣼⢸⣿⣿⣿
+⡿⣫⣭⣝⡣⢹⢹⣿⡀⡙⠛⣩⣭⡽⠂⡾⡿⣇⠀⠙⢿⡿⢃⣾⣿⣿⢸⣭⣮⢹
+⢸⣿⣯⣏⡙⣎⢛⣿⣷⣮⣕⡒⣖⣪⡾⠁⡇⠘⣦⢐⠀⣰⣟⢳⣾⢃⡜⣾⢣⣾
+⣷⣶⣄⢣⣥⡿⢰⣝⡹⣿⣿⡟⢹⣿⣿⠿⠿⠿⢿⣿⣿⣿⣿⠃⣁⡓⠆⢁⣿⣿
+⣿⣿⣿⣶⣿⣶⣿⣿⣷⠸⣿⣿⣿⠋⢠⡜⠿⢫⢒⠌⢷⣼⠃⣿⣿⣿⠃⠘⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⣿⣿⠇⠀⠀⠀⢀⠈⠀⠀⠈⣿⢸⣿⣿⣿⣦⣵⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠟⣿⡄⣤⣒⡰⠮⠤⠦⠤⣰⣿⢸⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢰⣟⣣⣬⣶⣶⣿⣯⡭⢭⢲⣯⢸⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣭⣝⣛⠿⠿⠿⠿⠧⣘⣛⣡⣾⣿⣿⣿⣿⣿⣿⣿"""}
 }
+
 def battle():
     global atk,hp,level,maxhp,kills
-
-    enemy=random.choice(elist)
+    if currentmap == lab:
+        enemy=random.choice(elist)
     if introIs == True:
         enemy="random guy"
+    if firstbrute == True:
+        enemy="ZEBRUTE"
     ehp = mobs[enemy]["HP"]
     ehp=int(ehp)
     emaxhp = ehp
@@ -163,7 +178,7 @@ def battle():
             if turn == True:
                 print(mobs[enemy]["ascii"])
                 print(mobs[enemy]["desc"])
-                print("\n1. FIGHT  2.ITEM  3.RUN")
+                print("\n1. FIGHT  2.ACTION  3.RUN")
                 batinput = input("\n->")
                 if batinput == "1":
                     print("you did",atk,"damage")
@@ -171,30 +186,8 @@ def battle():
                     print(enemy,"-", "HP",ehp,"/",emaxhp)
                     turn=False
                 elif batinput == "2":
-                    if not inventory["foods"]:
-                        print("you have no foods.")
-                    else:
-                        findex = len(inventory["foods"])
-                        tnum=0
-                        for i in range(int(findex)):
-                            print(tnum,".",inventory["foods"][tnum])
-                            tnum = tnum + 1
-                        eating=int(input("->"))
-
-                        if inventory["foods"][eating] == "SPRsoup":
-                            print("you feel so souper!")
-                            print("ATK and HP increase.")
-                            hp=hp+7
-                            atk=atk+3
-                            turn = False
-
-                        elif inventory["foods"][eating] == "CANbeans":
-                            print("hienz beanz mmm")
-                            print("HP increase.")
-                            hp=hp+4
-                            turn = False
-
-                        inventory["foods"].pop(eating)
+                    inv()
+                    turn=False
                 elif batinput == "3":
 
                     i=random.randint(0,100)
@@ -297,6 +290,7 @@ def intro():        #the intro which will lead into the first battle of the game
             input()
             break
         elif dc == "3":
+            print("doc:no i didnt..")
             break
     print("doc:how did you get in here???")
     input()
@@ -362,6 +356,27 @@ def menu(): #the menu you can access while ingame!!
             break
 
 menu()
+def tunneldia():
+    global firstbrute
+    print("DIALOGUE")
+    print("doc:holycrap the tunnel closed in on us")
+    input()
+    print("yo it stank in here.")
+    dc=input("1.sorry i farded lol!\n2.i think the fart spray was worse mate.\n3.ooo shiddinggg")
+    while True:
+        if dc == "1":
+            print("doc:no you didnt i just realised theres a billion zombies in here!! -(°ﾛ°)- ")
+            break
+        elif dc == "2":
+            print("doc:it COULDNT have been that bad")
+            break
+        elif dc == "3":
+            print("doc:how did you know i pooped myself (ᵕ—ᴗ—)")
+            break
+    input()
+    print("doc:HOLY CRAP LOOK AT HOW BIG HE IS ITS SO OVER")
+    firstbrute=True
+    battle()
 
 while MapGame == True:
     y = 8
@@ -382,7 +397,7 @@ while MapGame == True:
               ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
               ["w", "f", "f", "sh", "f", "f", "f", "f", "w"],
               ["w", "f", "f", "f", "f", "sh", "f", "f", "w"],
-                  ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
+              ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
               ["w", "sh", "f", "f", "f", "f", "f", "f", "w"],
               ["e", "e", "e", "e", "e", "e", "e", "e", "e"]]
     currentmap = lab
@@ -449,7 +464,7 @@ while MapGame == True:
                 whatclass = random.randint(1, 4)
                 if whatclass == 1:
                     robc = random.randint(1, 100)
-                    print(robc)
+
                     if robc >= 80:
                         yougot("knife")
                         icheck("knife", "weapons")
@@ -461,7 +476,7 @@ while MapGame == True:
                         icheck("wood bat", "weapons")
                 elif whatclass == 2:
                     robc = random.randint(1, 100)
-                    print(robc)
+
                     if robc <= 60:
                         yougot("leather vest")
                         icheck("leather vest","armour")
@@ -470,7 +485,7 @@ while MapGame == True:
                         icheck("metal sheets","armour")
                 elif whatclass == 3:
                     robc = random.randint(1, 100)
-                    print(robc)
+
                     if robc <= 40:
                         yougot("canned beans")
                         inventory["foods"].append("CANbeans")
@@ -498,10 +513,17 @@ while MapGame == True:
                 currentmap[y][x] = "rsh"
                 current_tile = currentmap[y][x]
             elif current_tile == "e":
-                if currentmap == lab:
-                    currentmap = tunnel
-                    print("you went into the tunnel.")
-                    y = y + 8
+                if level == 3:
+                    if currentmap == lab:
+                        currentmap = tunnel
+                        print("you went into the tunnel.")
+                        y = y + 8
+                        print("the entrance closed behind you!")
+                        tunneldia()
+                else:
+                    print("you are not high enough level!")
+                if currentmap == tunnel:
+                    "you cant go back"
             elif current_tile == "l":
                 print("the lab, you're too busy to go back there")
 
