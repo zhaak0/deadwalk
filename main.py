@@ -24,20 +24,20 @@ wepstats={
 
 using={"weapons":"nothing","armour":"nothing"}
 
-level = int(0)
-maxhp = 15
-maxhp = (level*3) + maxhp + wepstats["stat_armour"][using["armour"]]
-hp = float(maxhp)
+level = int(3)
+MAXHP = 15
+MAXHP = (level * 3) + MAXHP + wepstats["stat_armour"][using["armour"]]
+HP = float(MAXHP)
 kills=0
 baseatk=3
 atk = (level * 1.5) + baseatk + wepstats["stat_weapons"][using["weapons"]]
-levscale = level * 1.2 + atk*0.8
-inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": hp,"MAXHP":maxhp, "attack":atk, "kills":kills }
+levscale = level * 1.2
+inventory={"weapons":[],"armour":[],"foods":[], "level": level, "HP": HP, "MAXHP":MAXHP, "attack":atk, "kills":kills}
 
 stats={"level":inventory["level"], "HP":inventory["HP"], "attack":inventory["attack"]}
 
 def inv():
-    global choice,inventory,using,atk,level,baseatk,hp,maxhp
+    global choice,inventory,using,atk,level,baseatk,HP,MAXHP
     inving=True
     atk = (level* 1.5) + baseatk + wepstats["stat_weapons"][using["weapons"]]
     inventory["attack"] = atk
@@ -74,7 +74,7 @@ def inv():
             if not inventory["armour"]:
                 print("you have no armour")
             else:
-                findex = len((inventory["armour"]))
+                findex = len(inventory["armour"])
                 tnum = 0
 
                 for i in range(int(findex)):
@@ -87,9 +87,10 @@ def inv():
                         try:
                             equipping = int(equipping)
                             using["armour"] = inventory["armour"][equipping]
-                            maxhp = (level * 3) + maxhp + wepstats["stat_armour"][using["armour"]]
+                            MAXHP = (level * 3) + MAXHP + wepstats["stat_armour"][using["armour"]]
+                            inventory["MAXHP"]
                             print(using["armour"])
-                            print("your maxhp is: ", maxhp)
+                            print("your MAXHP is: ", MAXHP)
                             break
                         except IndexError:
                             print("you input the wrong number mate")
@@ -115,20 +116,29 @@ def inv():
                             if inventory["foods"][eating] == "SPRsoup":
                                 print("you feel so souper!")
                                 print("ATK and HP increase.")
-                                hp = hp + 7
-                                inventory["HP"] = hp
+                                if HP == MAXHP:
+                                    print("you have max hp.")
+                                    break
+                                HP = HP + 7
+                                if HP > MAXHP:
+                                    HP = MAXHP
+                                    print("HP was maxxed!")
+                                inventory["HP"] = HP
                                 atk = atk + 3
+
                                 break
 
                             elif inventory["foods"][eating] == "CANbeans":
                                 print("hienz beanz mmm")
                                 print("HP increase.")
-                                hp = hp + 4
-                                inventory["HP"] = hp
+                                HP = HP + 10
+                                if HP > MAXHP:
+                                    HP = MAXHP
+                                inventory["HP"] = HP
                                 break
                         except IndexError:
                             print("not an option")
-
+                            break
         if choice == "4":
             break
 
@@ -139,23 +149,16 @@ mobs = {
     "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "hes green and greedy and so green and green."},
     "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are stripped to the bone, super sharp owieowie!"},
     "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf "},
-    "ZEBRUTE":{"attack":10+ levscale, "HP": 16 + levscale,"ascii":"""⣿⣿⣿⣿⣿⣿⣿⣿⡿⢟⣩⣵⣶⣶⣶⣶⡶⣢⣶⣬⣙⠻⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⡿⢋⠴⣿⣿⠛⠭⢟⡿⣿⣯⣽⣿⣛⣛⣷⣬⡙⢿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⠏⡴⡓⣿⢻⠿⣛⣻⣿⣬⡘⣯⣚⡼⠋⣛⠛⣿⡿⢦⠹⣿⣿⣿⣿
-⣿⣿⣿⣿⡟⢜⡗⣾⢧⣶⣿⡿⠛⢿⣿⡇⣿⡿⢰⣮⣝⠷⣙⣼⣙⢧⢹⣿⣿⣿
-⣿⣿⣿⣿⡇⢟⣵⣿⠸⣿⣿⡀⠀⣸⣿⢃⣿⡇⢿⣟⠉⢱⣌⠇⢟⣼⢸⣿⣿⣿
-⡿⣫⣭⣝⡣⢹⢹⣿⡀⡙⠛⣩⣭⡽⠂⡾⡿⣇⠀⠙⢿⡿⢃⣾⣿⣿⢸⣭⣮⢹
-⢸⣿⣯⣏⡙⣎⢛⣿⣷⣮⣕⡒⣖⣪⡾⠁⡇⠘⣦⢐⠀⣰⣟⢳⣾⢃⡜⣾⢣⣾
-⣷⣶⣄⢣⣥⡿⢰⣝⡹⣿⣿⡟⢹⣿⣿⠿⠿⠿⢿⣿⣿⣿⣿⠃⣁⡓⠆⢁⣿⣿
-⣿⣿⣿⣶⣿⣶⣿⣿⣷⠸⣿⣿⣿⠋⢠⡜⠿⢫⢒⠌⢷⣼⠃⣿⣿⣿⠃⠘⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⣿⣿⠇⠀⠀⠀⢀⠈⠀⠀⠈⣿⢸⣿⣿⣿⣦⣵⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠟⣿⡄⣤⣒⡰⠮⠤⠦⠤⣰⣿⢸⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢰⣟⣣⣬⣶⣶⣿⣯⡭⢭⢲⣯⢸⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣭⣝⣛⠿⠿⠿⠿⠧⣘⣛⣡⣾⣿⣿⣿⣿⣿⣿⣿"""}
+    "ZEBRUTE":{"attack":10+ levscale, "HP": 20 + levscale,"desc":"big bastard","ascii":"""
+   ◞◞\\/◟◟
+ ◜| ⚇  ◯ |◝
+ ◟▕  ⯊メ▕ ◞
+   ◟――◞
+"""}
 }
 
 def battle():
-    global atk,hp,level,maxhp,kills
+    global atk,HP,level,MAXHP,kills
     if currentmap == lab:
         enemy=random.choice(elist)
     if introIs == True:
@@ -167,6 +170,8 @@ def battle():
     emaxhp = ehp
     print(stats)
     print(f"\na {enemy} approaches!")
+
+
     if introIs == True:
         print("press 1 and attack!!!")
         print("you can heal by eating food by pressing 2 which is found in shops.\nyou can run if you think you're outmatched but there is a chance that you can fail;\nwhen you fail, the enemy will be able to have their turn!")
@@ -176,6 +181,7 @@ def battle():
     while True:
         if ehp > 0:
             if turn == True:
+                print(f"{enemy} - HP: {ehp}/{emaxhp}")
                 print(mobs[enemy]["ascii"])
                 print(mobs[enemy]["desc"])
                 print("\n1. FIGHT  2.ACTION  3.RUN")
@@ -183,7 +189,6 @@ def battle():
                 if batinput == "1":
                     print("you did",atk,"damage")
                     ehp = ehp - atk
-                    print(enemy,"-", "HP",ehp,"/",emaxhp)
                     turn=False
                 elif batinput == "2":
                     inv()
@@ -208,9 +213,9 @@ def battle():
                         turn = False
             else:
                 print("the",enemy,"attacked and did",mobs[enemy]["attack"],"damage.")
-                hp = hp - mobs[enemy]["attack"]
-                print("your hp is now:",hp,"/",maxhp)
-                inventory["HP"]=hp
+                HP = HP - mobs[enemy]["attack"]
+                print("your HP is now:", HP, "/", MAXHP)
+                inventory["HP"]=HP
                 turn = True
         elif ehp <= 0:
             print("battle won woo")
@@ -222,14 +227,14 @@ def battle():
                     print("level up!")
                     level = level+1
                     inventory["level"]=level
-                    inventory["MAXHP"]=maxhp
+                    inventory["MAXHP"]=MAXHP
                     print("you are now level",level)
                     kills = 0
                 stealing(0,1)
                 print(tilename)
             break
-        if hp <= 0:
-            print("you died.\nyour mission is over.")
+        if HP <= 0:
+            print("you died bye")
             exit()
 
 def intro():        #the intro which will lead into the first battle of the game
@@ -239,7 +244,7 @@ def intro():        #the intro which will lead into the first battle of the game
     input()
     print("???:what is your name?\n")
     while True:
-        username = input("your name:")
+        username = input("->")
         if username == "":
             print("hi no gimme a name")
         else:
@@ -276,7 +281,7 @@ def intro():        #the intro which will lead into the first battle of the game
     input()
     print("doc:who are you.(╭ರ_•́)")
     input()
-    print("1.'im the worlds last hope?'\n2.'who are you... who is this kid? whats he gonna do?'\n3.'oooh shiddings'")
+    print("1.'im the worlds last hope?'\n2.'who are you... who is this kid? whats he gonna do?'\n3.'oooh pooo..'")
     while True:
         dc = input("->")
         if dc == "1":
@@ -290,9 +295,9 @@ def intro():        #the intro which will lead into the first battle of the game
             input()
             break
         elif dc == "3":
-            print("doc:no i didnt..")
+            print("doc:no i didntpoo.....")
             break
-    print("doc:how did you get in here???")
+    print("doc:how did you get in here anyway rando???")
     input()
     print("ultra evil guy:my name is actually ultra evil guy im here to stop you from saving the world grgrllgGRAHHH!")
     print("*he turns into a zombie on the spot?!*")
@@ -333,8 +338,8 @@ def menu(): #the menu you can access while ingame!!
     print("[¬º-°]¬\n")
     print("----------------------")
     print("# 1 --> play")
-    print("# 2 --> controls")
-    print("# 3 --> quit(no please stay.)")
+    print("# 2 --> controls(recommended)")
+    print("# 3 --> quit")
     print("----------------------")
     while True:
         print("what is your choice?:")
@@ -362,8 +367,10 @@ def tunneldia():
     print("doc:holycrap the tunnel closed in on us")
     input()
     print("yo it stank in here.")
-    dc=input("1.sorry i farded lol!\n2.i think the fart spray was worse mate.\n3.ooo shiddinggg")
+    print("1.sorry i farded lol!\n2.i think the fart spray was worse mate.\n3.oooh poopoo...")
+
     while True:
+        dc = input("->")
         if dc == "1":
             print("doc:no you didnt i just realised theres a billion zombies in here!! -(°ﾛ°)- ")
             break
@@ -374,7 +381,7 @@ def tunneldia():
             print("doc:how did you know i pooped myself (ᵕ—ᴗ—)")
             break
     input()
-    print("doc:HOLY CRAP LOOK AT HOW BIG HE IS ITS SO OVER")
+    print("doc:HOLY CRAP LOOK AT HOW BIG HE IS ITS SO OVER HES APPROACHING AAAAA")
     firstbrute=True
     battle()
 
@@ -489,7 +496,7 @@ while MapGame == True:
                     if robc <= 40:
                         yougot("canned beans")
                         inventory["foods"].append("CANbeans")
-                    if robc <= 100:
+                    elif robc <= 100:
                         yougot("super soup!")
                         inventory["foods"].append("SPRsoup")
                 elif whatclass == 4:
@@ -557,10 +564,14 @@ while MapGame == True:
                     eatmoss = input("there is moss here. eat it? Y/N\n")
                     if eatmoss.lower() == "y":
                         print("you ate the moss.\n you feel great!")
+                        print("+5 HP")
+                        hp = hp + 5
+                        if HP>MAXHP:
+                            HP=MAXHP
                         mosstime = False
                     elif eatmoss.lower() == "n":
                         print("loser.")
-                        mosstime = False  # an Easter egg referencing a game
+                        mosstime = False  # an Easter egg referencing deltarune
 
         elif current_tile == "l":
             labcount = labcount + 1
@@ -570,9 +581,12 @@ while MapGame == True:
                 print("there is a lab here")
 
         if entile == True:
-            encounter = random.randint(1, 7)
-            if encounter == 1:
-                battle()
+            if currentmap == lab:
+                encounter = random.randint(1, 15)
+                if encounter == 1:
+                    battle()
+            elif currentmap == tunnel:
+                encounter = random.randint(1, 5)
         if any(char in choice for char in walks):
             pass
             #playsound("sounds/walk.wav")
