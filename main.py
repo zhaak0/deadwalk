@@ -4,7 +4,7 @@ import time
 
 from win32con import MIIM_CHECKMARKS
 firstbrute=False
-wallcount=int(0)
+wallcount=int(3)
 MapGame = False
 def line():
     print("----------------------")
@@ -113,6 +113,7 @@ def inv():
                     eating = input("->")
                     if eating.isdigit():
                         try:
+                            eating=int(eating)
                             if inventory["foods"][eating] == "SPRsoup":
                                 print("you feel so souper!")
                                 print("ATK and HP increase.")
@@ -149,7 +150,7 @@ mobs = {
     "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "hes green and greedy and so green and green."},
     "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are stripped to the bone, super sharp owieowie!"},
     "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf "},
-    "ZEBRUTE":{"attack":10+ levscale, "HP": 20 + levscale,"desc":"big bastard","ascii":"""
+    "ZEBRUTE":{"attack":10+ levscale, "HP": 20 + levscale,"desc":"a big boy!","ascii":"""
    ◞◞\\/◟◟
  ◜| ⚇  ◯ |◝
  ◟▕  ⯊メ▕ ◞
@@ -158,6 +159,7 @@ mobs = {
 }
 
 def battle():
+    line()
     global atk,HP,level,MAXHP,kills
     if currentmap == lab:
         enemy=random.choice(elist)
@@ -211,14 +213,45 @@ def battle():
                     else:
                         print("it dragged you back into the fight!!")
                         turn = False
-            else:
-                print("the",enemy,"attacked and did",mobs[enemy]["attack"],"damage.")
-                HP = HP - mobs[enemy]["attack"]
-                print("your HP is now:", HP, "/", MAXHP)
-                inventory["HP"]=HP
-                turn = True
+            elif turn == False:
+                if firstbrute == True:
+                    print(f"the brute attack and did {HP-1} damage!")
+                    HP - HP+1
+                    print("your HP is now:",HP,"/",MAXHP)
+                    print("you are crippled!\n you will miss one turn.")
+                    line()
+                    print("DIALOGUE")
+                    input()
+                    print("doc:ARE YOU OKAY",username,"?!")
+                    input()
+                    print("doc:oh god this is it then... your mission is over...")
+                    input()
+                    print("???:HEY!")
+                    line()
+                    print("1. its so over were getting jumped ONTOP of this thing that just almost one shot me.\nyay were getting saved!!!\n")
+                    dc=input("->")
+                    if dc == "1":
+                        print("???:NONO WE WANNA HELP STOP DONT MOVE A MUSCLE!!")
+                    elif dc == "2":
+                        print("???:YESYES NOW DONT MOVE!")
+                    input()
+                    print("???:the brute has CRIPPLED you!\n???:if you try to act or attack or run you WILL die.")
+                    input()
+                    print("doc:what do we do then??")
+                    input()
+                    global fbruteend
+                    fbruteend=True
+
+                    ehp=0
+
+                else:
+                    print("the",enemy,"attacked and did",mobs[enemy]["attack"],"damage.")
+                    HP = HP - mobs[enemy]["attack"]
+                    print("your HP is now:", HP, "/", MAXHP)
+                    inventory["HP"]=HP
+                    turn = True
         elif ehp <= 0:
-            print("battle won woo")
+            print("battle won woo hoo!")
             print("+1 kill")
             kills = kills+1
             inventory["kills"]=kills
@@ -297,6 +330,7 @@ def intro():        #the intro which will lead into the first battle of the game
         elif dc == "3":
             print("doc:no i didntpoo.....")
             break
+    dc=0
     print("doc:how did you get in here anyway rando???")
     input()
     print("ultra evil guy:my name is actually ultra evil guy im here to stop you from saving the world grgrllgGRAHHH!")
@@ -380,6 +414,7 @@ def tunneldia():
         elif dc == "3":
             print("doc:how did you know i pooped myself (ᵕ—ᴗ—)")
             break
+    dc=0
     input()
     print("doc:HOLY CRAP LOOK AT HOW BIG HE IS ITS SO OVER HES APPROACHING AAAAA")
     firstbrute=True
