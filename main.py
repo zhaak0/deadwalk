@@ -164,6 +164,7 @@ def inv():
                                 print("+10 HP")
                                 if HP > MAXHP:
                                     HP = MAXHP
+
                                 inventory["HP"] = HP
                                 break
                         except IndexError:
@@ -259,6 +260,12 @@ def battle():
             print("battle won woo hoo!")
             print("+1 kill")
             kills = kills+1
+            print("+10 HP from winning.")
+            HP = HP + 10
+            if HP > MAXHP:
+                HP = MAXHP
+                print("MAX HP")
+            inventory["HP"]=HP
             inventory["kills"]=kills
             if introIs == False:
                 if kills == 3:
@@ -269,6 +276,7 @@ def battle():
                     print("you are now level",level)
                     kills = 0
                 stealing(0,1)
+                line()
                 print(tilename)
             break
         if HP <= 0:
@@ -295,8 +303,8 @@ def intro():        #the intro which will lead into the first battle of the game
     print("???:are you even conscious...")
     input()
     print("???:WAKEUP DAMN!")
-    #playsound("sounds/spray.wav")
-    #playsound("sounds/scream.wav")
+    playsound("sounds/spray.wav")
+    playsound("sounds/scream.wav")
     print("*your nostrils burn.*")
     print("???:nothing like some skatole and ammonium sulfide (fart spray.), am i right!?")
     input()
@@ -305,7 +313,7 @@ def intro():        #the intro which will lead into the first battle of the game
     print("???:you're probably confused...")
     input()
     print("well to start off, my name is...")
-    #playsound("sounds/drumroll.mp3")
+    playsound("sounds/drumroll.mp3")
     print("???:THE DOCTOR!!")
     input()
     print("doc:why are you looking at me like that.")
@@ -502,7 +510,7 @@ while MapGame == True:
         choice = input("-> ").lower()
         if not any(char in choice for char in mapinputs):
             print("INVALID")
-            #playsound("sounds/invalid input.wav")  # if the input the player gives is invalid it tells them and makes a sound
+            playsound("sounds/invalid input.wav")  # if the input the player gives is invalid it tells them and makes a sound
 
         if choice == "w":
             if y > 0:
@@ -617,7 +625,7 @@ while MapGame == True:
             elif x == 8:
                 print("there is a wall to your right")
             elif y == 8:
-                print("there is a wall below you.")
+                print("there is a wall below you.")         #built in borders for movement
 
             rollmoss = random.randint(1, 10)
             if rollmoss == 1:
@@ -644,14 +652,12 @@ while MapGame == True:
 
         if entile == True:
             if currentmap == lab:
-                encounter = random.randint(1, 15)
+                encounter = random.randint(1, 10)
                 if encounter == 1:
                     battle()
             elif currentmap == tunnel:
                 encounter = random.randint(1, 5)
         if any(char in choice for char in walks):
-            pass
-            #playsound("sounds/walk.wav")
+            playsound("sounds/walk.wav")
         elif any(char in choice for char in interacts):
-            pass
-            #playsound("sounds/bell.mp3")
+            playsound("sounds/bell.mp3")
