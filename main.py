@@ -3,12 +3,35 @@ import random
 import time
 
 from win32con import MIIM_CHECKMARKS
+entrancecount=0
 firstbrute=False
 wallcount=int(3)
+global MapGame, lab ,tunnel, HP
 MapGame = False
+
+lab = [["w", "e", "e", "e", "e", "e", "e", "e", "w"],
+       ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
+       ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
+       ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
+       ["w", "f", "f", "sh", "f", "f", "f", "f", "w"],
+       ["w", "f", "f", "f", "f", "sh", "f", "f", "w"],
+       ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
+       ["w", "sh", "f", "f", "f", "f", "f", "f", "w"],
+       ["w", "w", "w", "l", "l", "l", "w", "w", "w"]]
+
+tunnel = [["w", "e", "e", "e", "e", "e", "e", "e", "w"],
+          ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
+          ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
+          ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
+          ["w", "f", "f", "sh", "f", "f", "f", "f", "w"],
+          ["w", "f", "f", "f", "f", "sh", "f", "f", "w"],
+          ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
+          ["w", "sh", "f", "f", "f", "f", "f", "f", "w"],
+          ["e", "e", "e", "e", "e", "e", "e", "e", "e"]]
+currentmap = lab
 def line():
     print("----------------------")
-
+line()
 def yougot(gaineditem):
     gaineditem=str(gaineditem)
     gaineditem=gaineditem.upper()
@@ -24,7 +47,7 @@ wepstats={
 
 using={"weapons":"nothing","armour":"nothing"}
 
-level = int(3)
+level = int(0)
 MAXHP = 15
 MAXHP = (level * 3) + MAXHP + wepstats["stat_armour"][using["armour"]]
 HP = float(MAXHP)
@@ -115,24 +138,30 @@ def inv():
                         try:
                             eating=int(eating)
                             if inventory["foods"][eating] == "SPRsoup":
-                                print("you feel so souper!")
-                                print("ATK and HP increase.")
                                 if HP == MAXHP:
                                     print("you have max hp.")
                                     break
+                                inventory["foods"].pop(eating)
+                                print("you feel so souper!")
+                                print("ATK and HP increase.")
                                 HP = HP + 7
+                                print("+7 HP")
                                 if HP > MAXHP:
                                     HP = MAXHP
                                     print("HP was maxxed!")
                                 inventory["HP"] = HP
-                                atk = atk + 3
+                                baseatk = baseatk + 2
 
                                 break
 
                             elif inventory["foods"][eating] == "CANbeans":
+                                if HP == MAXHP:
+                                    print("you have max hp.")
+                                    break
+                                inventory["foods"].pop(eating)
                                 print("hienz beanz mmm")
-                                print("HP increase.")
                                 HP = HP + 10
+                                print("+10 HP")
                                 if HP > MAXHP:
                                     HP = MAXHP
                                 inventory["HP"] = HP
@@ -147,9 +176,9 @@ elist=["zombie","skelezombie","fatbie"]
 elist2=["ZEBRUTE","zombie","skelezombie","fatbie"]
 mobs = {
     "random guy": {"attack": 3, "HP":6, "ascii":"웃", "desc":"rando turned into a zombie!?"},
-    "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "rar": 1, "desc": "hes green and greedy and so green and green."},
-    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are stripped to the bone, super sharp owieowie!"},
-    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "fat asf "},
+    "zombie": {"attack": 4 + levscale, "HP": 7 + levscale, "ascii":"\\(´ཀ`)/", "desc": "hes green and greedy and so green and green, did i mention hes green?"},
+    "skelezombie": {"attack": 7 + levscale, "HP": 4 + levscale,"ascii":"𐂯-(´ཀ`)-𐂯", "desc": "his arms are stripped to the bone and weirdly sharp. owie! owie!"},
+    "fatbie": {"attack": 2 + levscale, "HP": 12 + levscale,"ascii": "(っ҂ཀ•)っ", "desc": "VERY fat "},
     "ZEBRUTE":{"attack":10+ levscale, "HP": 20 + levscale,"desc":"a big boy!","ascii":"""
    ◞◞\\/◟◟
  ◜| ⚇  ◯ |◝
@@ -160,7 +189,7 @@ mobs = {
 
 def battle():
     line()
-    global atk,HP,level,MAXHP,kills
+    global atk,HP,level,MAXHP,kills,username
     if currentmap == lab:
         enemy=random.choice(elist)
     if introIs == True:
@@ -170,9 +199,9 @@ def battle():
     ehp = mobs[enemy]["HP"]
     ehp=int(ehp)
     emaxhp = ehp
-    print(stats)
-    print(f"\na {enemy} approaches!")
 
+    print("your stats",stats)
+    print(f"\na {enemy} approaches!")
 
     if introIs == True:
         print("press 1 and attack!!!")
@@ -183,9 +212,10 @@ def battle():
     while True:
         if ehp > 0:
             if turn == True:
-                print(f"{enemy} - HP: {ehp}/{emaxhp}")
+                print(f"{enemy} - HP: {ehp}/{emaxhp} ATK: {mobs[enemy]["attack"]}")
                 print(mobs[enemy]["ascii"])
                 print(mobs[enemy]["desc"])
+                line()
                 print("\n1. FIGHT  2.ACTION  3.RUN")
                 batinput = input("\n->")
                 if batinput == "1":
@@ -215,32 +245,7 @@ def battle():
                         turn = False
             elif turn == False:
                 if firstbrute == True:
-                    print(f"the brute attack and did {HP-1} damage!")
-                    HP - HP+1
-                    print("your HP is now:",HP,"/",MAXHP)
-                    print("you are crippled!\n you will miss one turn.")
-                    line()
-                    print("DIALOGUE")
-                    input()
-                    print("doc:ARE YOU OKAY",username,"?!")
-                    input()
-                    print("doc:oh god this is it then... your mission is over...")
-                    input()
-                    print("???:HEY!")
-                    line()
-                    print("1. its so over were getting jumped ONTOP of this thing that just almost one shot me.\nyay were getting saved!!!\n")
-                    dc=input("->")
-                    if dc == "1":
-                        print("???:NONO WE WANNA HELP STOP DONT MOVE A MUSCLE!!")
-                    elif dc == "2":
-                        print("???:YESYES NOW DONT MOVE!")
-                    input()
-                    print("???:the brute has CRIPPLED you!\n???:if you try to act or attack or run you WILL die.")
-                    input()
-                    print("doc:what do we do then??")
-                    input()
-                    global fbruteend
-                    fbruteend=True
+                    brutedia()
 
                     ehp=0
 
@@ -271,6 +276,8 @@ def battle():
             exit()
 
 def intro():        #the intro which will lead into the first battle of the game
+    print("DIALOGUE")
+    line()
     print("...")
     input()
     print("???: do you hear me?... soldier?..")
@@ -337,28 +344,63 @@ def intro():        #the intro which will lead into the first battle of the game
     print("*he turns into a zombie on the spot?!*")
     input()
     print("doc:holy crap save me my dear soldier",username)
+    MapGame
     battle()
     print("doc:omg you saved mee!!")
     input()
-    print("doc:okay get out.")
+    print("doc:YOU have to save the world so we should probably be leaving soon.")
     input()
     input("doc:its time for your...")
     input()
 
 introIs = True #to skip the intro
 while introIs == True:
-    introchoice = input("do you want the intro y/n")
+    print("'->' means you have to input something to continue ")
+    print("when you see 'DIALOGUE' you must press ENTER to continue the dialogue.")
+    introchoice = input("do you want the intro y/n\n->")
+    line()
     if introchoice == "y":
         intro()
         introIs = False
     elif introchoice == "n":
         while True:
-            username = input("your name:")
+            username = input("your name:\n->")
             if username == "":
                 print("hi no gimme a name")
             else:
                 break
         introIs=False
+
+def brutedia():
+    global firstbrute,HP
+    print("the brute attack and did",HP-1,"damage!")
+    HP -= HP -1
+    print("your HP is now:", HP, "/", MAXHP)
+    print("you are crippled!\n you will miss one turn.")
+    line()
+    print("DIALOGUE")
+    input()
+    print("doc:ARE YOU OKAY", username, "?!")
+    input()
+    print("doc:oh god this is it then... your mission is over...")
+    input()
+    print("???:HEY!")
+    line()
+    print(
+        "1. its so over were getting jumped ONTOP of this thing that just almost one shot me.\n2.yay were getting saved!!!\n")
+    dc = input("->")
+    if dc == "1":
+        print("???:NONO WE WANNA HELP STOP DONT MOVE A MUSCLE!!")
+    elif dc == "2":
+        print("???:YESYES NOW DONT MOVE!")
+    input()
+    print("???:the brute has CRIPPLED you!\n???:if you try to act or attack or run you WILL die.")
+    input()
+    print("doc:what do we do then??")
+    input()
+    global fbruteend
+    fbruteend = True
+    firstbrute = False
 
 def menu(): #the menu you can access while ingame!!
     global MapGame
@@ -423,25 +465,7 @@ def tunneldia():
 while MapGame == True:
     y = 8
     x = 4
-    lab = [["w", "e", "e", "e", "e", "e", "e", "e", "w"],
-           ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
-           ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
-           ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
-           ["w", "f", "f", "sh", "f", "f", "f", "f", "w"],
-           ["w", "f", "f", "f", "f", "sh", "f", "f", "w"],
-           ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
-           ["w", "sh", "f", "f", "f", "f", "f", "f", "w"],
-           ["w", "w", "w", "l", "l", "l", "w", "w", "w"]]
 
-    tunnel = [["w", "e", "e", "e", "e", "e", "e", "e", "w"],
-              ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
-              ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
-              ["w", "f", "f", "f", "f", "f", "f", "f", "w"],
-              ["w", "f", "f", "sh", "f", "f", "f", "f", "w"],
-              ["w", "f", "f", "f", "f", "sh", "f", "f", "w"],
-              ["w", "f", "f", "f", "sh", "f", "f", "sh", "w"],
-              ["w", "sh", "f", "f", "f", "f", "f", "f", "w"],
-              ["e", "e", "e", "e", "e", "e", "e", "e", "e"]]
     currentmap = lab
     y_len = len(currentmap) - 1
     x_len = len(currentmap[0]) - 1
@@ -460,9 +484,8 @@ while MapGame == True:
     entile = biom[current_tile]["en"]
 
     play = True
-    print("-> means input \n")
-    print("you've left the lab")
-    print("you may now move around")
+    print("you've left the lab with the doctor.")
+    print("doc:go explore, you can move in all directions.")
 
     labcount = 0
     encounter = 0
@@ -564,6 +587,10 @@ while MapGame == True:
                         tunneldia()
                 else:
                     print("you are not high enough level!")
+                    entrancecount=+1
+                    if entrancecount==1:
+                        print("DIALOGUE")
+                        print("doc:try to get to to level three, maybe that will help!")
                 if currentmap == tunnel:
                     "you cant go back"
             elif current_tile == "l":
